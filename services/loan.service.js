@@ -7,21 +7,16 @@ class Loan {
 		this.remaining = remaining
 	}
 
-	async __create(UserId, customOpt = {}){
-		return await errorHandler(
-			db.Loan.create({
-				nominal: this.nominal,
-				remaining: this.remaining
-			},{...customOpt})
-		)
+	async __create(customOpt = {}){
+		return await db.Loan.create({
+			nominal: this.nominal,
+			remaining: this.remaining
+		},{...customOpt})
 	}
 
-	async __getAll(UserId, customOpt = {}){
+	async __getAll(customOpt = {}){
 		return await errorHandler(
-			db.Loan.findAll({
-				where: { UserId },
-				...customOpt
-			})
+			db.Loan.findAll({...customOpt})
 		)
 	}
 
