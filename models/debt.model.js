@@ -15,7 +15,7 @@ module.exports = (sequelize, Loan, Creditor) => {
 			allowNull: false,
 			references: {
 				model: Creditor,
-				key: 'ContactId'
+				key: 'id'
 			}
 		}
 	})

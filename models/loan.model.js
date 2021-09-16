@@ -7,10 +7,6 @@ module.exports = (sequelize) => {
 			defaultValue: DataTypes.UUIDV4,
 			primaryKey: true
 		},
-		remaining: {
-			type: DataTypes.INTEGER,
-			allowNull: false
-		},
 		nominal: {
 			type: DataTypes.INTEGER,
 			allowNull: false

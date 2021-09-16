@@ -8,7 +8,7 @@ const creditorRoute = require('./creditor.controller')
 
 router.use('/auth', authRoute)
 router.use('/user', protectRoute, userRoute)
-router.use('/debitor', protectRoute, debtorRoute)
+router.use('/debtor', protectRoute, debtorRoute)
 router.use('/creditor', protectRoute, creditorRoute)
 
 module.exports = router

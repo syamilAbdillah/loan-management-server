@@ -2,15 +2,13 @@ const db = require('../models')
 const errorHandler = require('../utils')
 
 class Loan {
-	constructor({nominal, remaining}){
+	constructor({nominal}){
 		this.nominal 	= nominal
-		this.remaining = remaining
 	}
 
 	async __create(customOpt = {}){
 		return await db.Loan.create({
-			nominal: this.nominal,
-			remaining: this.remaining
+			nominal: this.nominal
 		},{...customOpt})
 	}
 
@@ -23,8 +21,7 @@ class Loan {
 	async __edit(LoanId, customOpt = {}){
 		return await errorHandler(
 			db.Loan.update({
-				nominal: this.nominal,
-				remaining: this.remaining	
+				nominal: this.nominal 	
 			}, 
 			{
 				where: {

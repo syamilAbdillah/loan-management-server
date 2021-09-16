@@ -26,9 +26,17 @@ class Creditor extends Contact {
 			include: [{
 				model: db.Creditor,
 				required: true,
-				// include: [{
-				// 	model: db.Debt
-				// }]
+				include: [{
+					model: db.Debt,
+					include: [{
+						model: db.Loan,
+						attributes: ['nominal'],
+						include: [{
+							model: db.Payment,
+							attributes: ['nominal']
+						}]
+					}]
+				}]
 			}]
 		})
 
