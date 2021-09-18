@@ -8,19 +8,14 @@ class Contact {
 	}
 
 	async addContact(UserId = '', customOpt = {}){
-		const [contact, error] = await errorHandler(
-			db.Contact.create({
-				UserId,
-				name: this.name,
-			}, {...customOpt})
-		)
-
-		return contact
+		return await db.Contact.create({
+			UserId,
+			name: this.name,
+		}, {...customOpt})
 	}
 
 	async edit(ContactId, customOpt = {}){
-		const [editedContact, error] = await errorHandler(
-			db.Contact.update({
+		return await db.Contact.update({
 				name: this.name
 			},
 			{
@@ -29,31 +24,22 @@ class Contact {
 				}, 
 				...customOpt
 			})
-		)
-	
-		return editedContact
 	}
 
 	async getAll(customOpt = {}){
-		const [contacts, error] = await errorHandler(
-			db.Contact.getAll({
-				attributes: ['id', 'name'],
-				...customOpt
-			})
-		)
-
-		return contacts
+		return await db.Contact.findAll({
+			attributes: ['id', 'name'],
+			...customOpt
+		})
 	}
 
 	async delete(ContactId, customOpt = {}){
-		const [deletedContact, error] = await errorHandler(
-			db.Contact.destroy({
-				where: {
-					id: ContactId
-				},
-				...customOpt
-			})
-		)
+		return await db.Contact.destroy({
+			where: {
+				id: ContactId
+			},
+			...customOpt
+		})
 	}
 }
 

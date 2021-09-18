@@ -5,18 +5,19 @@ module.exports = (sequelize, Loan, Debtor) => {
 		LoanId: {
 			type: DataTypes.UUID,
 			allowNull: false,
+			primaryKey: true,
 			references: {
 				model: Loan,
 				key: 'id'
 			}
 		},
-		DebtorId: {
+		DebtorContactId: {
 			type: DataTypes.UUID,
 			allowNull: false,
 			references: {
 				model: Debtor,
-				key: 'id'
+				key: 'ContactId'
 			}
 		}
 	})
-}
+} 

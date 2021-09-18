@@ -94,7 +94,7 @@ Payment.belongsTo(Loan)
 
 
 // model & db sync
-sequelize.sync({ alter: true })
+sequelize.sync({})
 	.then((arg) => console.log('db is sync'))
 	.catch(error => console.log('db is failed to sync', error))
 

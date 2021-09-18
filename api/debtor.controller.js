@@ -3,7 +3,6 @@ const Debtor = require('../services/debtor.service')
 
 router.get('/:id', async function(req, res){
 	const debtor = new Debtor('')
-	console.log(req.params)
 	const [debtorById, error] = await debtor.getById(req.params.id)
 
 	if(!debtorById){
@@ -21,7 +20,15 @@ router.get('/', async function(req, res){
 		return res.sendStatus(500)
 	}
 
-	return res.status(200).json(debtors)
+	return res.status(200).json(debtors.map(function(debtor){
+		return {
+			id: debtor.id,
+			name: debtor.name,
+			Credits: debtor.Debtor.Credits.map(function(credit){
+				return credit.Loan
+			})
+		}
+	}))
 })
 
 

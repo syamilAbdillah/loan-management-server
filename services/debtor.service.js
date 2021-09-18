@@ -25,7 +25,7 @@ class Debtor extends Contact {
 		}
 	}
 
-	async getAll(UserId){
+	async getAll2(UserId){
 		return db.Debtor.findAll({
 			include: [{
 				model: db.Contact,
@@ -40,9 +40,10 @@ class Debtor extends Contact {
 		.then(datas => {
 			const debtors = datas.map(data => {
 				return {
-					id: data.id,
+					id: data.Contact.id,
 					name: data.Contact.name,
-					remaining: 0
+					test: data.Credit,
+					remaining: 0,
 				}
 			})
 			return [debtors, null]
@@ -53,9 +54,26 @@ class Debtor extends Contact {
 		})
 	}
 
+	getAll(){
+		return errorHandler(super.getAll({
+					include: [{
+						model: db.Debtor,
+						attributes: ['ContactId'],
+						include: [{
+							model: db.Credit,
+							attributes: ['LoanId'],
+							include: [{
+								model: db.Loan,
+								attributes: ['id', 'nominal', 'date', 'desc']
+							}]
+						}]
+					}]
+				}))
+	}
+
 	getById(id){
 		return db.Debtor.findByPk(id, {
-			attributes: ['id'],
+			attributes: ['ContactId'],
 			include: [{
 				model: db.Contact,
 				attributes: ['id', 'name']
@@ -63,7 +81,7 @@ class Debtor extends Contact {
 		})
 		.then(data => {
 			const debtor = {
-				id: data.id,
+				id: data.Contact.id,
 				name: data.Contact.name
 			}
 			return [debtor, null]

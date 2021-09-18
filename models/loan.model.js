@@ -10,6 +10,14 @@ module.exports = (sequelize) => {
 		nominal: {
 			type: DataTypes.INTEGER,
 			allowNull: false
+		},
+		date: {
+			type: DataTypes.DATE,
+			allowNull: false
+		},
+		desc: {
+			type: DataTypes.STRING,
+			allowNull: false
 		}
 	})
 } 

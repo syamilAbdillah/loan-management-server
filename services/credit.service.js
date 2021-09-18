@@ -1,9 +1,10 @@
 const Loan = require('./loan.service')
 const db = require('../models')
+const errorHandler = require('../utils/errorHandler')
 
-class Credit extends Loan {
-	constructor({nominal, DebtorId}){
-		super({nominal})
+class Credit extends Loan { 
+	constructor({nominal, date, desc, DebtorId}){
+		super({nominal, desc, date})
 		this.DebtorId = DebtorId
 	}
 	async create(){
@@ -13,17 +14,17 @@ class Credit extends Loan {
 
 			const isDebtorExsist = await db.Debtor.findByPk(this.DebtorId, { transaction })
 
-			!isDebtorExsist && throw new Error('404')
+			if(!isDebtorExsist) throw new Error('404')
 
 			const loan = await super.__create({ transaction })
 			const credit = await db.Credit.create({
 				LoanId: loan.id,
-				DebtorId: this.DebtorId 
+				DebtorContactId: this.DebtorId 
 			}, { transaction })
 
 			await transaction.commit()
 
-			return [loan, null]
+			return [{loan, credit}, null]
 		}
 		catch(error){
 			console.log(error.message)
@@ -34,20 +35,45 @@ class Credit extends Loan {
 	}
 
 	async edit(id){
-		return await super.__edit(id)
+		const [credit, error] = await errorHandler(db.Credit.findByPk(id))
+		if(!credit){
+			return [null, error]	
+		}
+		const editedCredit = await errorHandler(super.__edit(credit.LoanId))
+		return [editedCredit, error]
 	}
 
-	async getAll(){
-		return await super.__getAll({
+	static async getAll(){
+		return await errorHandler(Loan.__getAll({
+			attributes: ['id', 'nominal', 'date', 'desc'],
 			include: [{
-				model: db.Debt,
-				required: true
+				model: db.Credit,
+				attributes: ['DebtorContactId'],
+				include: [{
+					model: db.Debtor,
+					attributes: ['ContactId'],
+					include: [{
+						model: db.Contact,
+						attributes: ['id', 'name']
+					}]
+				}]
 			}]
-		})
+		}))
 	}
 
-	async delete(id){
-		return await super.__delete(id)
+	static async getById(id){
+		return await errorHandler(Loan.__getById(id, {
+					attributes: ['id', 'nominal', 'desc', 'date'],
+					include: [{
+						model: db.Credit,
+						required: true,
+						attributes: ['DebtorContactId']
+					}]
+				}))
+	}
+
+	static async delete(id){
+		return await errorHandler(Loan.__delete(id))
 	}
 }
 

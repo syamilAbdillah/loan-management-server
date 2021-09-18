@@ -2,8 +2,8 @@ const Loan = require('./loan.service')
 const db = require('../models')
 
 class Debt extends Loan {
-	constructor({nominal, CreditorId}){
-		super({nominal})
+	constructor({nominal, desc, date, CreditorId}){
+		super({nominal, desc, date})
 		this.CreditorId = CreditorId
 	}
 	async create(){
@@ -37,8 +37,8 @@ class Debt extends Loan {
 		return await super.__edit(id)
 	}
 
-	async getAll(){
-		return await super.__getAll({
+	static async getAll(){
+		return await Loan.__getAll({
 			include: [
 			{
 				model: db.Debt,
@@ -48,7 +48,16 @@ class Debt extends Loan {
 		})
 	}
 
-	async delete(id){
+	static async getById(id){
+		return await Loan.__getById(id, {
+			include: [{
+				model: db.Debt,
+				required: true
+			}]
+		})
+	}
+
+	static async delete(id){
 		return await super.__delete(id)
 	}
 }
