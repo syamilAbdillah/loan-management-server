@@ -60,6 +60,9 @@ router.patch('/:id', async function(req, res){
 
 router.delete('/:id',async function(req, res){
 	const [deletedCredit, error] = await Credit.delete(req.params.id)
+	if(error) return res.sendStatus(404)
+
+	return res.sendStatus(200)
 })
 
 module.exports = router
