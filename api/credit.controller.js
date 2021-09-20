@@ -1,66 +1,66 @@
 const router = require('express').Router()
-const Creditor = require('../services/creditor.service')
-
-router.get('/:id', async function(req, res){
-	const creditor = new Creditor('')
-	const [creditorById, error] = await creditor.getById(req.params.id)
-
-	if(!creditorById){
-		return res.sendStatus(404)
-	}
-
-	return res.status(200).json(creditorById)
-})
+const Credit = require('../services/credit.service')
 
 router.get('/', async function(req, res){
-	const creditor = new Creditor('')
-	const [creditors, error] = await creditor.getAll(req.user.id)
-
-	if(creditors == null){
-		return res.sendStatus(500)
+	const [credits, error] = await Credit.getAll()
+	if(!credits){
+		return res.status(404).json(error)
 	}
 
-	return res.status(200).json(creditors.map(function(creditor){
-		return {
-			id: creditor.id,
-			name: creditor.name,
-			Debts: creditor?.Creditor?.Debts.map(function(debt){
-				return debt.Loan
-			})
+	return res.status(200).json(credits.map(credit => ({
+		id: credit.id,
+		desc: credit.desc,
+		date: credit.date,
+		nominal: credit.nominal,
+		Debtor: {
+			id: credit.Credit.DebtorContactId,
+			name: credit.Credit.Debtor.Contact.name
 		}
-	}))
+	})))
 })
 
+router.get('/:id', async function(req, res){
+	const [credit, error] = await Credit.getById(req.params.id)
+	if(!credit) return res.status(404).json(error)
 
-router.post('/',async function(req, res){
-	const creditor 		= new Creditor(req.body.name)
-	const [newCreditor, error] 	= await creditor.addContact(req.user.id)
-
-	if(error){
-		return res.sendStatus(500)
-	}
-
-	return res.status(200).json(newCreditor)
+	return res.status(200).json({
+		id: credit.id,
+		nominal: credit.nominal,
+		date: credit.date,
+		desc: credit.desc,
+		DebtorId: credit.Credit.DebtorContactId
+	})
 })
 
-router.patch('/:id',async function(req, res){
-	const creditor = new Creditor(req.body.name)
-	const [editedCreditor, error] = await creditor.edit(req.params.id)
+router.post('/', async function(req, res){
+	const credit = new Credit(req.body)
+	const [createdCredit, error] = await credit.create()
 
-	if(editedCreditor == null){
-		return res.sendStatus(404)
-	}
+	if(error) return res.status(500).json(error)
 
-	return res.sendStatus(200)
+	return res.status(200).json({
+		id: createdCredit.loan.id,
+		nominal: createdCredit.loan.nominal,
+		date: createdCredit.loan.date,
+		desc: createdCredit.loan.desc,
+		DebtorId: createdCredit.credit.DebtorContactId
+	})
 })
 
-router.delete('/:id', async function(req, res){
-	const creditor = new Creditor('')
-	const [deletedCreditor, error] = await creditor.delete(req.params.id)
+router.patch('/:id', async function(req, res){
+	const credit = new Credit(req.body)
+	const [editedCredit, error] = await credit.edit(req.params.id)
 
-	if(deletedCreditor == null){
-		return res.sendStatus(500)
-	}
+	if(error) return res.status(404).json(error)
+
+	if(editedCredit[0] != 1) return res.sendStatus(500)
+
+	return res.status(200).json(editedCredit)
+})
+
+router.delete('/:id',async function(req, res){
+	const [deletedCredit, error] = await Credit.delete(req.params.id)
+	if(error) return res.sendStatus(404)
 
 	return res.sendStatus(200)
 })
