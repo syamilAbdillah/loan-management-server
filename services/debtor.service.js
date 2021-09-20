@@ -25,40 +25,12 @@ class Debtor extends Contact {
 		}
 	}
 
-	async getAll2(UserId){
-		return db.Debtor.findAll({
-			include: [{
-				model: db.Contact,
-				where: {UserId}
-			}, {
-				model: db.Credit,
-				include: [{
-					model: db.Loan
-				}]
-			}]
-		})
-		.then(datas => {
-			const debtors = datas.map(data => {
-				return {
-					id: data.Contact.id,
-					name: data.Contact.name,
-					test: data.Credit,
-					remaining: 0,
-				}
-			})
-			return [debtors, null]
-		})
-		.catch(error => {
-			console.log(error)
-			return [null, error]
-		})
-	}
-
-	getAll(){
-		return errorHandler(super.getAll({
+	async getAll(){
+		return await errorHandler(super.getAll({
 					include: [{
 						model: db.Debtor,
 						attributes: ['ContactId'],
+						required: true,
 						include: [{
 							model: db.Credit,
 							attributes: ['LoanId'],

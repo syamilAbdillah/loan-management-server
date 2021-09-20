@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken')
+const db = require('../../models')
+const errorHandler = require('../../utils/errorHandler')
 
 module.exports = function(req, res, nex){
 	const authHeader = req.headers['authorization']
@@ -6,10 +8,16 @@ module.exports = function(req, res, nex){
 
 	!token && res.sendStatus(401)
 
-	jwt.verify(token, process.env.SECRET_KEY, function(error, user){
+	jwt.verify(token, process.env.SECRET_KEY,async function(error, user){
 		error && res.sendStatus(403)
 
-		req.user = user
-		nex()
+		const existedUser = await db.User.findByPk(user.id)
+
+		if(existedUser != null){
+			req.user = user
+			nex()
+		}else{
+			res.sendStatus(403)
+		}
 	})
 }

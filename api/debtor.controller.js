@@ -24,7 +24,7 @@ router.get('/', async function(req, res){
 		return {
 			id: debtor.id,
 			name: debtor.name,
-			Credits: debtor.Debtor.Credits.map(function(credit){
+			Credits: debtor?.Debtor?.Credits.map(function(credit){
 				return credit.Loan
 			})
 		}
