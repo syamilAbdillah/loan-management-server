@@ -48,6 +48,7 @@ class Credit extends Loan {
 			attributes: ['id', 'nominal', 'date', 'desc'],
 			include: [{
 				model: db.Credit,
+				required: true,
 				attributes: ['DebtorContactId'],
 				include: [{
 					model: db.Debtor,
