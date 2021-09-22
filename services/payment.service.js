@@ -14,7 +14,7 @@ class Payment {
 			transaction = await db.sequelize.transaction()
 			
 			const isLoanExist = await db.Loan.findByPk(this.LoanId, {transaction})
-			if(!isLoanExist) return [null, {message: 'Loan id doesn`t exist'}]
+			if(!isLoanExist) throw new Error(404)
 			
 			const payment = await db.Payment.create({
 				nominal: this.nominal,
@@ -43,8 +43,12 @@ class Payment {
 		)
 	}
 
-	async cancelPayment(id){
-		return errorHandler(
+	static async getAll(LoanId){
+		return await errorHandler(db.Payment.findAll({ where: {LoanId} }))
+	}
+
+	static async cancelPayment(id){
+		return await errorHandler(
 			db.Payment.destroy({
 				where: {id}
 			})
