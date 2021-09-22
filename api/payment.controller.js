@@ -11,4 +11,12 @@ router.post('/', async function(req, res){
 	return res.status(200).json(createdPayment)
 })
 
+router.get('/:LoanId', async function(req, res){
+	const [payments, error] = await Payment.getAll(req.params.LoanId)
+
+	if(payments == null) return res.status(404).json({message: 'payments not found'})
+
+	return res.status(200).json(payments)
+})
+
 module.exports = router

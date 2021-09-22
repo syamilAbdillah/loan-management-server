@@ -44,7 +44,12 @@ class Payment {
 	}
 
 	static async getAll(LoanId){
-		return await errorHandler(db.Payment.findAll({ where: {LoanId} }))
+		return await errorHandler(
+				db.Payment.findAll({ 
+					where: {LoanId},
+					attributes: ['id', 'date', 'nominal'] 
+				})
+			)
 	}
 
 	static async cancelPayment(id){
