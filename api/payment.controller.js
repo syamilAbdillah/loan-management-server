@@ -31,4 +31,12 @@ router.patch('/:id', async function(req, res){
 	}) 
 })
 
+router.delete('/:id', async function(req, res){
+	const [deletedPayment, error] = await Payment.cancelPayment(req.params.id)
+
+	if(error) return res.sendStatus(404)
+
+	return res.status(200).json({message: 'success delete payment with id ' + req.params.id})
+})
+
 module.exports = router
