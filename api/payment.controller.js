@@ -19,4 +19,16 @@ router.get('/:LoanId', async function(req, res){
 	return res.status(200).json(payments)
 })
 
+router.patch('/:id', async function(req, res){
+	
+	const payment = new Payment(req.body)
+	const [editedPayment, error]  = await payment.edit(req.params.id)
+
+	if(error) return res.sendStatus(500)
+
+	return res.status(200).json({
+		message: 'success edit payment with id ' + req.params.id
+	}) 
+})
+
 module.exports = router
