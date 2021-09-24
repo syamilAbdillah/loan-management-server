@@ -15,8 +15,10 @@ router.get('/', async function(req, res){
 		Creditor: {
 			id: debt.Debt.CreditorContactId,
 			name: debt.Debt.Creditor.Contact.name
-		}
+		}, 
+		paid: debt.Payments.reduce((acc, curr) => acc + curr.nominal, 0)
 	})))
+
 })
 
 router.get('/:id', async function(req, res){
@@ -28,7 +30,8 @@ router.get('/:id', async function(req, res){
 		nominal: debt.nominal,
 		date: debt.date,
 		desc: debt.desc,
-		CreditorId: debt.Debt.CreditorContactId
+		CreditorId: debt.Debt.CreditorContactId,
+		Payments: debt.Payments
 	})
 })
 
@@ -66,3 +69,34 @@ router.delete('/:id',async function(req, res){
 })
 
 module.exports = router
+
+/*
+SELECT 
+	"Loan"."id", "
+	Loan"."nominal", 
+	"Loan"."date", 
+	"Loan"."desc", 
+	"Payments"."id" AS "Payments.id", 
+	"Payments"."nominal" AS "Payments.nominal", 
+	"Payments"."date" AS "Payments.date", 
+	"Payments"."LoanId" AS "Payments.LoanId", 
+	"Payments"."createdAt" AS "Payments.createdAt", 
+	"Payments"."updatedAt" AS "Payments.updatedAt", 
+	"Debt"."LoanId" AS "Debt.LoanId", 
+	"Debt"."CreditorContactId" AS "Debt.CreditorContactId", 
+	"Debt->Creditor"."ContactId" AS "Debt.Creditor.ContactId", 
+	"Debt->Creditor->Contact"."id" AS "Debt.Creditor.Contact.id", 
+	"Debt->Creditor->Contact"."name" AS "Debt.Creditor.Contact.name" 
+FROM 
+	"Loan" AS "Loan" 
+LEFT OUTER JOIN 
+	"Payment" 
+		AS 
+	"Payments" ON "Loan"."id" = "Payments"."LoanId" 
+INNER JOIN 
+	"Debt" AS "Debt" ON "Loan"."id" = "Debt"."LoanId" 
+LEFT OUTER JOIN 
+	"Creditor" AS "Debt->Creditor" ON "Debt"."CreditorContactId" = "Debt->Creditor"."ContactId" 
+LEFT OUTER JOIN 
+	"Contact" AS "Debt->Creditor->Contact" ON "Debt->Creditor"."ContactId" = "Debt->Creditor->Contact"."id";
+*/

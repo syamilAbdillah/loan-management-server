@@ -12,6 +12,7 @@ router.get('/', async function(req, res){
 		desc: credit.desc,
 		date: credit.date,
 		nominal: credit.nominal,
+		paid: credit.Payments.reduce((acc, curr) => acc + curr.nominal, 0),
 		Debtor: {
 			id: credit.Credit.DebtorContactId,
 			name: credit.Credit.Debtor.Contact.name
@@ -28,7 +29,8 @@ router.get('/:id', async function(req, res){
 		nominal: credit.nominal,
 		date: credit.date,
 		desc: credit.desc,
-		DebtorId: credit.Credit.DebtorContactId
+		DebtorId: credit.Credit.DebtorContactId,
+		Payments: credit.Payments
 	})
 })
 

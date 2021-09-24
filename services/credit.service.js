@@ -47,6 +47,9 @@ class Credit extends Loan {
 		return await errorHandler(Loan.__getAll({
 			attributes: ['id', 'nominal', 'date', 'desc'],
 			include: [{
+				model: db.Payment,
+				attributes: ['nominal']
+			},{
 				model: db.Credit,
 				required: true,
 				attributes: ['DebtorContactId'],
@@ -66,6 +69,9 @@ class Credit extends Loan {
 		return await errorHandler(Loan.__getById(id, {
 					attributes: ['id', 'nominal', 'desc', 'date'],
 					include: [{
+						model: db.Payment,
+						attributes: ['id', 'nominal', 'date']
+					},{
 						model: db.Credit,
 						required: true,
 						attributes: ['DebtorContactId']
