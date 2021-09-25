@@ -74,7 +74,15 @@ class Debt extends Loan {
 					},{
 						model: db.Debt,
 						required: true,
-						attributes: ['CreditorContactId']
+						attributes: ['CreditorContactId'],
+						include: [{
+							model: db.Creditor,
+							attributes: ['ContactId'],
+							include: [{
+								model: db.Contact,
+								attributes: ['name']
+							}]
+						}]
 					}]
 				}))
 	}

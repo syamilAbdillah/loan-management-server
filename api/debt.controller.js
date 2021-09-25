@@ -30,7 +30,10 @@ router.get('/:id', async function(req, res){
 		nominal: debt.nominal,
 		date: debt.date,
 		desc: debt.desc,
-		CreditorId: debt.Debt.CreditorContactId,
+		Contact: {
+			id: debt.Debt.CreditorContactId,
+			name: debt.Debt.Creditor.Contact.name
+		},
 		Payments: debt.Payments
 	})
 })
